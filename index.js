@@ -119,11 +119,9 @@ var states = [];
 app.get('/auth/save', (req, res, next) => {
 	console.log('save route');
 	github.auth.login(req.query.code, (err, token, headers) => {
-		console.log(token, err, headers);
 		for(let i = states.length; i--;){
 			if(req.query.state === states[i].state){
-				console.log(req.deployer.host, req.headers['host']);
-				if(req.deployer.host !== req.headers['host']){
+				if(states[i].host !== req.headers['host']){
 					states[i].token = token;
 			    	res.redirect('http://' + states[i].host + req.deployer.basePath + '/auth/populate/' + req.query.state);
 				}else{
