@@ -114,7 +114,13 @@ app.get('/repo/patch/:to', async (req, res, next) => {
 var states = [];
 
 app.get('/', (req, res) => {
-	console.log(req.session.code, states);
+	if(req.session.token){
+	 	const client = github.client(req.session.token);
+	 	const user = client.me();
+
+	 	console.log(user);
+	}
+
 	res.render(path.join(__dirname, 'index.html'), { 
 		basePath: req.deployer.basePath,
 		version: req.deployer.version 
@@ -143,17 +149,29 @@ app.get('/auth',  (req, res) => {
 	});
 });
 
-app.get('/auth/save', (req, res) => {
-	console.log(state);
-	// const state = states.find(el => el.state === req.query.state);
+app.get('/auth/save', (req, res, next) => {
+	github.auth.login(req.query.code, (err, token, headers) => {
+		for(let i = states.length; i--;){
+			if(req.query.state === states[i].state){
+				if(req.deployer.host !== req.headers['host']){
+					states[i].token = token;
+			    	res.redirect('http://' + states[i].host + req.deployer.basePath + 'auth/populate/' + req.query.state);
+				}else{
+					req.session.githubToken = token;
+					res.redirect('/');
+				}
+			}
+		}
+    });
+});
 
-	// if(state){
-	// 	req.session.githubCode = req.query.code;
-	// 	res.redirect('/');
-	// }else{
-		res.redirect('/auth');
-	// }
-	res.end();
+app.get('/auth/populate/:state', (req, res) => {
+	for(let i = states.length; i--;){
+		if(req.params.state === states[i].state){
+			req.session.githubToken = token;
+			res.redirect('/');
+		}
+	}
 });
 
 app.use(function errorHandler( err, req, res, next ) {
