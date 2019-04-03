@@ -157,8 +157,8 @@ app.get('/auth',  (req, res) => {
 });
 
 app.get('/', (req, res) => {
-	if(req.session.token){
-	 	const client = github.client(req.session.token);
+	if(req.session.githubToken){
+	 	const client = github.client(req.session.githubToken);
 	 	const user = client.me();
 
 	 	console.log(user);
