@@ -113,18 +113,33 @@ app.get('/repo/patch/:to', async (req, res, next) => {
 
 var states = [];
 
-app.get('/', (req, res) => {
-	if(req.session.token){
-	 	const client = github.client(req.session.token);
-	 	const user = client.me();
+app.get('/auth/save', (req, res, next) => {
+	console.log('save route');
+	github.auth.login(req.query.code, (err, token, headers) => {
+		console.log(token, err, headers);
+		for(let i = states.length; i--;){
+			if(req.query.state === states[i].state){
+				if(req.deployer.host !== req.headers['host']){
+					states[i].token = token;
+			    	res.redirect('http://' + states[i].host + req.deployer.basePath + 'auth/populate/' + req.query.state);
+				}else{
+					req.session.githubToken = token;
+					res.redirect('/');
+				}
 
-	 	console.log(user);
+				next();
+			}
+		}
+    });
+});
+
+app.get('/auth/populate/:state', (req, res) => {
+	for(let i = states.length; i--;){
+		if(req.params.state === states[i].state){
+			req.session.githubToken = token;
+			res.redirect('/');
+		}
 	}
-
-	res.render(path.join(__dirname, 'index.html'), { 
-		basePath: req.deployer.basePath,
-		version: req.deployer.version 
-	});
 });
 
 app.get('/auth',  (req, res) => {
@@ -149,33 +164,18 @@ app.get('/auth',  (req, res) => {
 	});
 });
 
-app.get('/auth/save', (req, res, next) => {
-	github.auth.login(req.query.code, (err, token, headers) => {
-		console.log(token, err, headers);
-		
-		for(let i = states.length; i--;){
-			if(req.query.state === states[i].state){
-				if(req.deployer.host !== req.headers['host']){
-					states[i].token = token;
-			    	res.redirect('http://' + states[i].host + req.deployer.basePath + 'auth/populate/' + req.query.state);
-				}else{
-					req.session.githubToken = token;
-					res.redirect('/');
-				}
+app.get('/', (req, res) => {
+	if(req.session.token){
+	 	const client = github.client(req.session.token);
+	 	const user = client.me();
 
-				next();
-			}
-		}
-    });
-});
-
-app.get('/auth/populate/:state', (req, res) => {
-	for(let i = states.length; i--;){
-		if(req.params.state === states[i].state){
-			req.session.githubToken = token;
-			res.redirect('/');
-		}
+	 	console.log(user);
 	}
+
+	res.render(path.join(__dirname, 'index.html'), { 
+		basePath: req.deployer.basePath,
+		version: req.deployer.version 
+	});
 });
 
 app.use(function errorHandler( err, req, res, next ) {
