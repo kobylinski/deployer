@@ -58,17 +58,20 @@ class App {
 		});
 	}
 
-	update(data) {
+	update() {
 		this.el.classList.add('loading');
 		axios.get(window.APP_BASE_PATH + '/repo/history').then(res => {
 			this.data = res.data;
 			this.commits.update(res.data);
 			this.el.classList.remove('loading');
-		})
+		});
 	}
 }
 
-const app = new App;
-app.update();
+document.querySelectorAll('#app').forEach(container => {
+	const app = new App;
+	app.update();
+	mount(container, app);
+});
 
-mount(document.querySelector('.container'), app);
+

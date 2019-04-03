@@ -155,3 +155,23 @@ html, body{
 		}
 	}
 }
+
+#login{
+
+	height: 100%;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	
+	a{
+		display: block;
+	}
+
+	svg{
+		display: block;
+		width: 10rem;
+		height: 5rem;
+	}
+}
