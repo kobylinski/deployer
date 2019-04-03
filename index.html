@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Deployer</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="<%= basePath %>/assets/style.css" type="text/css" media="screen">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&amp;subset=latin-ext" rel="stylesheet">
+</head>
+<body>
+	<div class="container"></div>
+	<script type="text/javascript">
+		window.APP_BASE_PATH = '<%= basePath %>';
+		window.REPO_VERSION = '<%= version %>'
+	</script>
+	<script type="text/javascript" src="<%= basePath %>/assets/script.js"></script>
+</body>
+</html>
