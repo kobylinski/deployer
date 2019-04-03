@@ -153,6 +153,7 @@ app.get('/auth/save', (req, res) => {
 	}else{
 		res.redirect('/auth');
 	}
+	res.end();
 });
 
 app.use(function errorHandler( err, req, res, next ) {
