@@ -4,7 +4,8 @@
   "description": "deploy git repo with simple web interface",
   "main": "index.js",
   "scripts": {
-    "watch": "DEBUG=express:* nodemon --watch index.js --watch app index.js"
+    "watch": "DEBUG=express:* nodemon --watch index.js --watch app index.js",
+    "run": "pm2 start index.js --name=deployer --watch"
   },
   "author": "",
   "license": "ISC",
