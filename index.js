@@ -40,17 +40,17 @@ app.use(session({
   genid: (req) => uuidv5(req.headers['host'], uuidv5.DNS),
 }));
 
-// app.use((req, res, next) => {
-// 	if( 
-// 		!req.session.secret && 
-// 		!req.url.startsWith('/assets') && 
-// 		!req.url.startsWith('/auth') && 
-// 		!req.url.startsWith('/hook')
-// 	){
-// 		res.redirect(req.deployer.basePath+'/auth');
-// 	}
-// 	next();
-// });
+app.use((req, res, next) => {
+	if( 
+		!req.session.githubToken && 
+		!req.url.startsWith('/assets') && 
+		!req.url.startsWith('/auth') && 
+		!req.url.startsWith('/hook')
+	){
+		res.redirect(req.deployer.basePath+'/auth');
+	}
+	next();
+});
 
 app.engine('html', ejs.renderFile);
 app.set('view engine', 'html');
@@ -68,9 +68,12 @@ app.use(sass({
 	prefix: '/assets' 
 }));
 
-app.use(postcss({
+app.use('/assets', postcss({
 	plugins: [ autoprefixer ],
-	src: (req) => path.join( __dirname, 'dest', req.url )
+	src: (req) => {
+		console.log(path.join( __dirname, 'assets', req.url ));
+		return path.join( __dirname, 'assets', req.url )
+	}
 }));
 
 app.get('/assets/script.js', browserify(__dirname + '/assets/script.js'));
