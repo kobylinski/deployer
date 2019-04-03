@@ -144,15 +144,15 @@ app.get('/auth',  (req, res) => {
 });
 
 app.get('/auth/save', (req, res) => {
-	const state = states.find(el => el.state === req.query.state);
-	console.log(req.query);
+	console.log(state);
+	// const state = states.find(el => el.state === req.query.state);
 
-	if(state){
-		req.session.githubCode = req.query.code;
-		res.redirect('/');
-	}else{
+	// if(state){
+	// 	req.session.githubCode = req.query.code;
+	// 	res.redirect('/');
+	// }else{
 		res.redirect('/auth');
-	}
+	// }
 	res.end();
 });
 
