@@ -12,8 +12,6 @@ const bodyParser = require("body-parser");
 const github = require('octonode');
 
 const sass = require('node-sass-middleware');
-const postcss = require('postcss-middleware');
-const autoprefixer = require('autoprefixer');
 const browserify = require('browserify-middleware');
 
 const appEnv = require('./app/env');
@@ -66,14 +64,6 @@ app.use(sass({
 	outputStyle: 'compressed', 
 	includePaths: [path.join(__dirname), 'node_modules'],
 	prefix: '/assets' 
-}));
-
-app.use('/assets', postcss({
-	plugins: [ autoprefixer ],
-	src: (req) => {
-		console.log(path.join( __dirname, 'assets', req.url ));
-		return path.join( __dirname, 'assets', req.url )
-	}
 }));
 
 app.get('/assets/script.js', browserify(__dirname + '/assets/script.js'));
