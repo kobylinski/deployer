@@ -129,9 +129,10 @@ app.get('/auth',  (req, res) => {
 	}).login(['user', 'repo']);
 
 	const now = new Date().getTime();
+	const state = auth_url.match(/&state=([0-9a-z]{32})/i);
 
 	(states = states.filter(el => el.time < (now - 3200))).push({
-		state: auth_url.match(/&state=([0-9a-z]{32})/i),
+		state: state.length ? state[1] : null,
 		host: req.headers['host'],
 		time: now 
 	});
@@ -142,7 +143,7 @@ app.get('/auth',  (req, res) => {
 	});
 });
 
-app.get('/auth/save', (req, res, next) => {
+app.get('/auth/save', (req, res) => {
 	const state = states.find(el => el.state === req.query.state);
 	console.log(req.query);
 
