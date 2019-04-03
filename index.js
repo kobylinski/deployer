@@ -113,17 +113,15 @@ app.get('/repo/patch/:to', async (req, res, next) => {
 
 var states = [];
 
-app.get('/', function(req, res, next){
+app.get('/', (req, res) => {
 	console.log(req.session.code, states);
-	
 	res.render(path.join(__dirname, 'index.html'), { 
 		basePath: req.deployer.basePath,
 		version: req.deployer.version 
 	});
-	next();
 });
 
-app.get('/auth', function(req, res, next){
+app.get('/auth',  (req, res) => {
 
 	const auth_url = github.auth.config({
 		id: process.env.GITHUB_ID,
@@ -138,21 +136,22 @@ app.get('/auth', function(req, res, next){
 		time: now 
 	});
 
-	res.render(path.join(__dirname, 'login.html'), {
+	res.render( path.join(__dirname, 'login.html'), {
 		basePath: req.deployer.basePath,
 		login: auth_url
 	});
-
-	next();
 });
 
-app.get('/auth/save', function(req, res, next){
+app.get('/auth/save', (req, res, next) => {
 	const state = states.find(el => el.state === req.query.state);
-	if(typeof state !== 'udenfined'){
+	console.log(req.query);
+
+	if(state){
 		req.session.githubCode = req.query.code;
 		res.redirect('/');
+	}else{
+		res.redirect('/auth');
 	}
-	res.redirect('/auth');
 });
 
 app.use(function errorHandler( err, req, res, next ) {
