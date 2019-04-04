@@ -43,7 +43,7 @@ module.exports = {
 					})
 				);
 		});
-	}
+	},
 
 	cleanup(host){
 		const now = new Date().getTime();
