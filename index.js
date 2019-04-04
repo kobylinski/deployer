@@ -113,7 +113,9 @@ app.get('/auth/save', (req, res, next) => {
 	console.log('save route', req.query.code);
 	github.auth.login(req.query.code, (err, token, headers) => {
 		console.log('github login:', err, token, headers);
+		console.log('saved states:', states);
 		for(let i = states.length; i--;){
+			console.log('test state: ', req.query.state, states[i].state);
 			if(req.query.state === states[i].state){
 				if(states[i].host !== req.headers['host']){
 					console.log('redirect to:', states[i].host);
