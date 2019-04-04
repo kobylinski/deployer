@@ -10,6 +10,7 @@ const ejs = require('ejs');
 const github = require('octonode');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const favicon = require('serve-favicon');
 
 const sass = require('node-sass-middleware');
 const browserify = require('browserify-middleware');
@@ -32,6 +33,7 @@ app.use(appVersions.check);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(favicon(path.join(__dirname, 'favicon.ico')))
 
 app.use(session({
   secret: process.env.SECRET,
