@@ -116,13 +116,16 @@ app.get('/auth/save', (req, res, next) => {
 		for(let i = states.length; i--;){
 			if(req.query.state === states[i].state){
 				if(states[i].host !== req.headers['host']){
+					console.log('redirect to:', states[i].host);
 					states[i].token = token;
 			    	res.redirect('http://' + states[i].host + req.deployer.basePath + '/auth/populate/' + req.query.state);
 				}else{
+					console.log('save token: ', token);
 					req.session.githubToken = token;
 					res.redirect('/');
 				}
 
+				console.log('next route');
 				next();
 			}
 		}
