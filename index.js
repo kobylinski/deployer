@@ -9,6 +9,7 @@ const git = require('nodegit');
 const ejs = require('ejs');
 const github = require('octonode');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 const sass = require('node-sass-middleware');
 const browserify = require('browserify-middleware');
@@ -30,7 +31,7 @@ app.use(appEnv);
 app.use(appVersions.check);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(express.cookieParser());
+app.use(cookieParser());
 
 app.use(session({
   secret: process.env.SECRET,
