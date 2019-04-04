@@ -26,10 +26,10 @@ module.exports = {
 		return new Promise( (done, reject) => {
 			git.Repository
 				.open( repo )
-				.then( repo => repo.config())
+				.then( repository => repository.config())
 				.then( config => config.getStringBuf("remote.origin.url"))
-				.then( buf => github.client(buf.toString().replace('git@github.com:', '').replace('.git', ''))
-					.repo(repo)
+				.then( buf => github.client(token)
+					.repo(buf.toString().replace('git@github.com:', '').replace('.git', ''))
 					.info( (err, result) => {
 						if(err){
 							reject(err);
