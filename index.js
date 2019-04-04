@@ -112,7 +112,7 @@ app.get('/repo/patch/:to', async (req, res, next) => {
 var states = [];
 
 app.get('/auth/save', (req, res, next) => {
-	console.log('save route:', req.query.code);
+	console.log('save route:', req.query.code, req.session.githubAuthAppHost);
 
 	github.auth.login(req.query.code, (err, token, headers) => {
 		console.log('github login:', err, token, headers);
