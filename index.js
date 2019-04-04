@@ -165,9 +165,10 @@ app.get('/auth',  (req, res) => {
 	}
 
 	const auth_url = appGithub.getLoginUrlFor(req.headers['host']);
-	req.session.githubAuthAppHost = req.params.host;
+	req.session.githubAuthAppHost = req.headers['host'];
+	console.log('----------------------------');
 	console.log(req.session.githubAuthAppHost);
-	console.log()
+	console.log('----------------------------');
 
 	res.render( path.join(__dirname, 'login.html'), {
 		basePath: req.deployer.basePath,
