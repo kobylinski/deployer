@@ -157,6 +157,16 @@ app.get('/auth/redirect/:host', (req, res) => {
 });
 
 app.get('/auth',  (req, res) => {
+
+
+	console.log(req.session);
+	if(req.session.counter){
+		req.session.counter++;
+	}else{
+		req.session.counter = 1;
+	}
+
+
 	if(req.headers['host'] !== process.env.MAIN_HOST){
 		appGithub.setCallback(req.deployer.url + '/auth/populate');
 		return res.redirect('http://'+process.env.MAIN_HOST+'/auth/redirect/'+req.headers['host']);
