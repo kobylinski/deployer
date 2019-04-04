@@ -1,4 +1,5 @@
 const github = require('octonode');
+const git = require('nodegit');
 const logins = {};
 
 const cleanup = now => {
@@ -14,6 +15,16 @@ const save = (host, data) => {
 };
 
 module.exports = {
+
+	getRepoId(repo){
+		return new Promise(done => {
+			git.Repository
+				.open( repo )
+				.then( repo => repo.config())
+				.then( config => config.getStringBuf("remote.origin.url"))
+				.then( buf => done(buf.toString().replace('git@github.com:', '').replace('.git', '')));
+		});
+	},
 
 	cleanup(host){
 		const now = new Date().getTime();
