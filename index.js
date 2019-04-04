@@ -32,7 +32,9 @@ app.use(bodyParser.json());
 app.set('trust proxy', 1);
 app.use(session({
   secret: process.env.SECRET,
-  cookie: { maxAge: 60000 }
+  cookie: { maxAge: 60000 },
+  saveUninitialized: false,
+  resave: true
 }));
 
 app.use((req, res, next) => {
