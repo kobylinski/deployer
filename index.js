@@ -7,7 +7,6 @@ const path = require('path');
 const fs = require('fs'); 
 const git = require('nodegit');
 const ejs = require('ejs');
-const bodyParser = require("body-parser");
 const github = require('octonode');
 
 const sass = require('node-sass-middleware');
@@ -24,12 +23,14 @@ const repoPatch = require('./app/repo/patch');
 const repoBranch = require('./app/repo/branch');
 const repoHistory = require('./app/repo/history');
 
+app.enable('trust proxy');
+
 app.use(appEnv);
 app.use(appVersions.check);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(express.cookieParser());
 
-app.set('trust proxy', 1);
 app.use(session({
   secret: process.env.SECRET,
   cookie: { maxAge: 60000 },
