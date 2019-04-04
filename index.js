@@ -188,14 +188,10 @@ app.get('/auth',  (req, res) => {
 });
 
 app.get('/', (req, res, next) => {
-	if(req.session.githubToken){
-	 	const client = github.client(req.session.githubToken);
-	 	const user = client.me();
-
-	 	appGithub.getRepoId(req.deployer.repoPath).then(repoId => {
-	 		client.repo(repoId).info((err, result) => console.log('repo: ', err, status));
-	 	});
-	}
+	res.render(path.join(__dirname, 'index.html'), { 
+		basePath: req.deployer.basePath,
+		version: req.deployer.version 
+	});
 });
 
 app.use(function errorHandler( err, req, res, next ) {
