@@ -131,22 +131,37 @@ app.get('/auth/save', (req, res, next) => {
 			return next();
 		}
 		
-		req.session.githubToken = token;
 		req.session.githubAuthAppHost = null;
-		appGithub.cleanup(req.session.githubAuthAppHost);
-		res.redirect('/');
-		next();
+		appGithub.authorize(req.deployer.repoPath, token).then( result => {
+			req.session.githubToken = token;
+			appGithub.cleanup(req.session.githubAuthAppHost);
+			res.redirect('/');
+			next();
+		}).catch(e => {
+			console.log('Login error: ', e);
+			res.redirect('/auth');
+			next();
+		});
     });
 });
 
-app.get('/auth/populate', (req, res) => {
-	if(!appGithub.hasCallback(req.headers['host'])){
-		return res.redirect('/auth');
+app.get('/auth/populate', (req, res, next) => {
+	if(!appGithub.hasToken(req.headers['host'])){
+		return req.redirect('/auth');
 	}
 
-	req.session.gethubToken = token;
-	appGithub.cleanup(req.headers['host']);
-	res.redirect('/');
+	const token = appGithub.getFor(req.headers['host']);
+
+	appGithub.authorize(req.deployer.repoPath, token).then( result => {
+		req.session.githubToken = token;
+		appGithub.cleanup(req.headers['host']);
+		res.redirect('/');
+		next();
+	}).catch(e => {
+		console.log('Login error: ', e);
+		res.redirect('/auth');
+		next();
+	});
 });
 
 app.get('/auth/redirect/:host', (req, res) => {
@@ -178,8 +193,7 @@ app.get('/', (req, res, next) => {
 	 	const user = client.me();
 
 	 	appGithub.getRepoId(req.deployer.repoPath).then(repoId => {
-	 		console.log(repoId);
-	 		client.repo(repoId).info((err, status, body, headers) => console.log('repo: ', err, status));
+	 		client.repo(repoId).info((err, result) => console.log('repo: ', err, status));
 	 	});
 	}
 });

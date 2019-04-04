@@ -18,13 +18,31 @@ module.exports = {
 
 	getRepoId(repo){
 		return new Promise(done => {
+			
+		});
+	},
+
+	authorize(repo, token){
+		return new Promise( (done, reject) => {
 			git.Repository
 				.open( repo )
 				.then( repo => repo.config())
 				.then( config => config.getStringBuf("remote.origin.url"))
-				.then( buf => done(buf.toString().replace('git@github.com:', '').replace('.git', '')));
+				.then( buf => github.client(buf.toString().replace('git@github.com:', '').replace('.git', ''))
+					.repo(repo)
+					.info( (err, result) => {
+						if(err){
+							reject(err);
+						}else{
+							if(result.permissions.admin){
+								done(true);
+							}else{
+								reject(false);
+							}
+						}
+					});
 		});
-	},
+	}
 
 	cleanup(host){
 		const now = new Date().getTime();
@@ -62,6 +80,13 @@ module.exports = {
 
 	getFor(host){
 		return logins[host];
+	},
+
+	hasToken(host){
+		if(typeof logins[host] === 'undefined'){
+			return false;
+		}
+		return typeof logins[host].token !== 'undefined';
 	},
 
 	hasCallback(host){
