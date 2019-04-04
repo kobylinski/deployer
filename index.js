@@ -7,7 +7,6 @@ const path = require('path');
 const fs = require('fs'); 
 const git = require('nodegit');
 const ejs = require('ejs');
-const uuidv5 = require('uuid/v5');
 const bodyParser = require("body-parser");
 const github = require('octonode');
 
@@ -35,8 +34,7 @@ app.use(session({
   secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 60000 },
-  genid: (req) => uuidv5(req.headers['host'], uuidv5.DNS),
+  cookie: { maxAge: 60000 }
 }));
 
 app.use((req, res, next) => {
