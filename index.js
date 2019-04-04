@@ -166,28 +166,27 @@ app.get('/auth',  (req, res) => {
 
 	const auth_url = appGithub.getLoginUrlFor(req.headers['host']);
 	req.session.githubAuthAppHost = req.headers['host'];
-	console.log('----------------------------');
-	console.log(req.session.githubAuthAppHost);
-	console.log('----------------------------');
-
 	res.render( path.join(__dirname, 'login.html'), {
 		basePath: req.deployer.basePath,
 		login: auth_url
 	});
 });
 
-app.get('/', (req, res,) => {
+app.get('/', (req, res, next) => {
 	if(req.session.githubToken){
 	 	const client = github.client(req.session.githubToken);
 	 	const user = client.me();
 
-	 	console.log('user:', user);
+	 	user.repos(result => {
+	 		console.log(result);
+	 		
+	 		res.render(path.join(__dirname, 'index.html'), { 
+				basePath: req.deployer.basePath,
+				version: req.deployer.version 
+			});
+	 		next();
+	 	});
 	}
-
-	res.render(path.join(__dirname, 'index.html'), { 
-		basePath: req.deployer.basePath,
-		version: req.deployer.version 
-	});
 });
 
 app.use(function errorHandler( err, req, res, next ) {
