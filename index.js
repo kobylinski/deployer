@@ -40,7 +40,7 @@ app.use(session({
 
 app.use((req, res, next) => {
 
-	console.log(req.session.githubToken);
+	console.log('githubToken:', req.session.githubToken);
 
 	if( 
 		!req.session.githubToken && 
@@ -164,7 +164,7 @@ app.get('/', (req, res) => {
 	 	const client = github.client(req.session.githubToken);
 	 	const user = client.me();
 
-	 	console.log(user);
+	 	console.log('user:', user);
 	}
 
 	res.render(path.join(__dirname, 'index.html'), { 
