@@ -178,8 +178,7 @@ app.get('/', (req, res, next) => {
 	 	const user = client.me();
 
 	 	user.repos(result => {
-	 		console.log(result);
-	 		
+	 		console.log('repos: ',result);
 	 		res.render(path.join(__dirname, 'index.html'), { 
 				basePath: req.deployer.basePath,
 				version: req.deployer.version 
