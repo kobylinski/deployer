@@ -112,6 +112,7 @@ var states = [];
 app.get('/auth/save', (req, res, next) => {
 	console.log('save route');
 	github.auth.login(req.query.code, (err, token, headers) => {
+		console.log(err, token, headers);
 		for(let i = states.length; i--;){
 			if(req.query.state === states[i].state){
 				if(states[i].host !== req.headers['host']){
