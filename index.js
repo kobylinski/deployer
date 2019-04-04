@@ -159,16 +159,6 @@ app.get('/auth/redirect/:host', (req, res) => {
 });
 
 app.get('/auth',  (req, res) => {
-
-
-	console.log(req.session);
-	if(req.session.counter){
-		req.session.counter++;
-	}else{
-		req.session.counter = 1;
-	}
-
-
 	if(req.headers['host'] !== process.env.MAIN_HOST){
 		appGithub.setCallback(req.deployer.url + '/auth/populate');
 		return res.redirect('http://'+process.env.MAIN_HOST+'/auth/redirect/'+req.headers['host']);
@@ -176,13 +166,16 @@ app.get('/auth',  (req, res) => {
 
 	const auth_url = appGithub.getLoginUrlFor(req.headers['host']);
 	req.session.githubAuthAppHost = req.params.host;
+	console.log(req.session.githubAuthAppHost);
+	console.log()
+
 	res.render( path.join(__dirname, 'login.html'), {
 		basePath: req.deployer.basePath,
 		login: auth_url
 	});
 });
 
-app.get('/', (req, res) => {
+app.get('/', (req, res,) => {
 	if(req.session.githubToken){
 	 	const client = github.client(req.session.githubToken);
 	 	const user = client.me();
