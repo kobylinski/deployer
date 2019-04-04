@@ -23,12 +23,16 @@ module.exports = {
 	},
 
 	authorize(repo, token){
+
+		console.log('authorize', repo, token);
+
 		return new Promise( (done, reject) => {
 			git.Repository
 				.open( repo )
 				.then( repository => repository.config())
 				.then( config => config.getStringBuf("remote.origin.url"))
-				.then( buf => github.client(token)
+				.then( buf => github
+					.client(token)
 					.repo(buf.toString().replace('git@github.com:', '').replace('.git', ''))
 					.info( (err, result) => {
 						if(err){
