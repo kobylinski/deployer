@@ -42,6 +42,7 @@ app.use(session({
 app.use((req, res, next) => {
 
 	console.log('githubToken:', req.session.githubToken);
+	console.log('githubAuthAppHost', req.session.githubAuthAppHost);
 
 	if( 
 		!req.session.githubToken && 
@@ -116,7 +117,7 @@ app.get('/auth/save', (req, res, next) => {
 	github.auth.login(req.query.code, (err, token, headers) => {
 		console.log('github login:', err, token, headers);
 
-		if(req.session.githubAuthAppHost){
+		if(!req.session.githubAuthAppHost){
 			res.redirect('/auth');
 			return next();
 		}
@@ -128,7 +129,7 @@ app.get('/auth/save', (req, res, next) => {
 		}
 		
 		req.session.githubToken = token;
-		res.session.githubAuthAppHost = null;
+		req.session.githubAuthAppHost = null;
 		appGithub.cleanup(req.session.githubAuthAppHost);
 		res.redirect('/');
 		next();
