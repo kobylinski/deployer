@@ -177,9 +177,9 @@ app.get('/', (req, res, next) => {
 	 	const client = github.client(req.session.githubToken);
 	 	const user = client.me();
 
-	 	client.repo('kobylinski/deployer').info((err, status, body, headers) => console.log('repo', body));
+	 	client.repo('kobylinski/deployer').info((err, status, body, headers) => console.log('repo: ', err, status));
 	 	user.repos((err, status, body, headers) => {
-	 		console.log('repos: ', body);
+	 		console.log('repos: ', err, status);
 	 		res.render(path.join(__dirname, 'index.html'), { 
 				basePath: req.deployer.basePath,
 				version: req.deployer.version 
