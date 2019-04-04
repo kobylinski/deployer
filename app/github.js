@@ -32,10 +32,9 @@ module.exports = {
 					.client(token)
 					.repo(buf.toString().replace('git@github.com:', '').replace('.git', ''))
 					.info( (err, result) => {
-						if(null === err){
+						if(null !== err){
 							reject(err);
 						}else{
-							console.log(result.permissions);
 							if(result.permissions.admin){
 								done(true);
 							}else{
