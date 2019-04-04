@@ -3,13 +3,13 @@ const path = require('path');
 
 module.exports = function(req, res, next){
 
-
 	const config = {
 		documentPath: req.headers['x-document-path'],
 		basePath: req.headers['x-base-path'] || '',
 		serverRole: req.headers['x-server-role'],
-		serverId: req.headers['x-server-id']
-	};	
+		serverId: req.headers['x-server-id'],
+		url: 'http://'+req.headers['host']+req.headers['x-base-path']
+	};
 
 	config.projectVersion = config.documentPath + req.headers['x-project-version'];
 	if(fs.existsSync(config.projectVersion)){

@@ -16,6 +16,7 @@ const browserify = require('browserify-middleware');
 
 const appEnv = require('./app/env');
 const appVersions = require('./app/versions');
+const appGithub = require('./app/github');
 
 const repoPull = require('./app/repo/pull');
 const repoInit = require('./app/repo/init');
@@ -110,57 +111,57 @@ app.get('/repo/patch/:to', async (req, res, next) => {
 var states = [];
 
 app.get('/auth/save', (req, res, next) => {
-	console.log('save route', req.query.code);
+	console.log('save route:', req.query.code);
+
 	github.auth.login(req.query.code, (err, token, headers) => {
 		console.log('github login:', err, token, headers);
-		console.log('saved states:', states);
-		for(let i = states.length; i--;){
-			console.log('test state: ', req.query.state, states[i].state);
-			if(req.query.state === states[i].state){
-				if(states[i].host !== req.headers['host']){
-					console.log('redirect to:', states[i].host);
-					states[i].token = token;
-			    	res.redirect('http://' + states[i].host + req.deployer.basePath + '/auth/populate/' + req.query.state);
-				}else{
-					console.log('save token: ', token);
-					req.session.githubToken = token;
-					res.redirect('/');
-				}
 
-				console.log('next route');
-				next();
-			}
+		if(req.session.githubAuthAppHost){
+			res.redirect('/auth');
+			return next();
 		}
+		
+		if(appGithub.hasCallback(req.session.githubAuthAppHost)){
+			appGithub.saveTokenFor(req.session.githubAuthAppHost, token);
+			res.redirect(appGithub.getFor(req.session.githubAuthAppHost).callback);
+			return next();
+		}
+		
+		req.session.githubToken = token;
+		res.session.githubAuthAppHost = null;
+		appGithub.cleanup(req.session.githubAuthAppHost);
+		res.redirect('/');
+		next();
     });
 });
 
-app.get('/auth/populate/:state', (req, res) => {
-	for(let i = states.length; i--;){
-		if(req.params.state === states[i].state){
-			req.session.githubToken = token;
-			res.redirect('/');
-		}
+app.get('/auth/populate', (req, res) => {
+	if(!appGithub.hasCallback(req.headers['host'])){
+		return res.redirect('/auth');
 	}
+
+	req.session.gethubToken = token;
+	appGithub.cleanup(req.headers['host']);
+	res.redirect('/');
+});
+
+app.get('/auth/redirect/:host', (req, res) => {
+	const auth_url = appGithub.getLoginUrlFor(req.params.host);
+	req.session.githubAuthAppHost = req.params.host;
+	res.render( path.join(__dirname, 'login.html'), {
+		basePath: req.deployer.basePath,
+		login: auth_url
+	});
 });
 
 app.get('/auth',  (req, res) => {
+	if(req.headers['host'] !== process.env.MAIN_HOST){
+		appGithub.setCallback(req.deployer.url + '/auth/populate');
+		return res.redirect('http://'+process.env.MAIN_HOST+'/auth/redirect/'+req.headers['host']);
+	}
 
-	const auth_url = github.auth.config({
-		id: process.env.GITHUB_ID,
-	  	secret: process.env.GITHUB_SECRET
-	}).login(['user', 'repo']);
-
-	const now = new Date().getTime();
-	const state = auth_url.match(/&state=([0-9a-z]{32})/i);
-
-	console.log('auth_login url: ', auth_url);
-
-	(states = states.filter(el => el.time < (now - 3200))).push({
-		state: state.length ? state[1] : null,
-		host: req.headers['host'],
-		time: now 
-	});
-
+	const auth_url = appGithub.getLoginUrlFor(req.headers['host']);
+	req.session.githubAuthAppHost = req.params.host;
 	res.render( path.join(__dirname, 'login.html'), {
 		basePath: req.deployer.basePath,
 		login: auth_url
