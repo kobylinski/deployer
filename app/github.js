@@ -35,6 +35,7 @@ module.exports = {
 						if(null === err){
 							reject(err);
 						}else{
+							console.log(result.permissions);
 							if(result.permissions.admin){
 								done(true);
 							}else{
