@@ -23,9 +23,6 @@ module.exports = {
 	},
 
 	authorize(repo, token){
-
-		console.log('authorize', token);
-
 		return new Promise( (done, reject) => {
 			git.Repository
 				.open( repo )
@@ -35,10 +32,7 @@ module.exports = {
 					.client(token)
 					.repo(buf.toString().replace('git@github.com:', '').replace('.git', ''))
 					.info( (err, result) => {
-
-						console.log('authorize', buf.toString().replace('git@github.com:', '').replace('.git', ''), err, result);
-
-						if(err){
+						if(null === err){
 							reject(err);
 						}else{
 							if(result.permissions.admin){
