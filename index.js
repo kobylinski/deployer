@@ -153,6 +153,8 @@ app.get('/auth',  (req, res) => {
 	const now = new Date().getTime();
 	const state = auth_url.match(/&state=([0-9a-z]{32})/i);
 
+	console.log('auth_login url: ', auth_url);
+
 	(states = states.filter(el => el.time < (now - 3200))).push({
 		state: state.length ? state[1] : null,
 		host: req.headers['host'],
