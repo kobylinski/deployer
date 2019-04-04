@@ -40,7 +40,8 @@ module.exports = {
 								reject(false);
 							}
 						}
-					});
+					})
+				);
 		});
 	}
 
