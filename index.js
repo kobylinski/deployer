@@ -8,6 +8,7 @@ const fs = require('fs');
 const git = require('nodegit');
 const ejs = require('ejs');
 const github = require('octonode');
+const bodyParser = require('body-parser');
 
 const sass = require('node-sass-middleware');
 const browserify = require('browserify-middleware');
