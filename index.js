@@ -39,6 +39,9 @@ app.use(session({
 }));
 
 app.use((req, res, next) => {
+
+	console.log(req.session.githubToken);
+
 	if( 
 		!req.session.githubToken && 
 		!req.url.startsWith('/assets') && 

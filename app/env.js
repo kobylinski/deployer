@@ -11,8 +11,6 @@ module.exports = function(req, res, next){
 		serverId: req.headers['x-server-id']
 	};	
 
-	console.log(config, req.query);
-
 	config.projectVersion = config.documentPath + req.headers['x-project-version'];
 	if(fs.existsSync(config.projectVersion)){
 		try{
