@@ -177,7 +177,8 @@ app.get('/', (req, res, next) => {
 	 	const client = github.client(req.session.githubToken);
 	 	const user = client.me();
 
-	 	appGithub.getRepoId().then(repoId => {
+	 	appGithub.getRepoId(req.deployer.repoPath).then(repoId => {
+	 		console.log(repoId);
 	 		client.repo(repoId).info((err, status, body, headers) => console.log('repo: ', err, status));
 	 	});
 	}
