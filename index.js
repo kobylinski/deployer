@@ -170,6 +170,7 @@ app.get('/auth/populate', (req, res, next) => {
 app.get('/auth/redirect/:host', (req, res) => {
 	const auth_url = appGithub.getLoginUrlFor(req.params.host);
 	req.session.githubAuthAppHost = req.params.host;
+	console.log('external host: ', req.params);
 	res.render( path.join(__dirname, 'login.html'), {
 		basePath: req.deployer.basePath,
 		login: auth_url
