@@ -48,13 +48,14 @@ app.use((req, res, next) => {
 
 	console.log('githubToken:', req.session.githubToken);
 	console.log('githubAuthAppHost', req.session.githubAuthAppHost);
+	console.log('deployerEnv', req.deployer);
 
 	if( 
 		!req.session.githubToken && 
 		!req.url.startsWith('/assets') && 
 		!req.url.startsWith('/auth') && 
 		!req.url.startsWith('/webhook') && 
-		!req.url.startsWith('/favicon')
+		!req.url.startsWith('/favicon.ico')
 	){
 		res.redirect(req.deployer.basePath+'/auth');
 		return;
