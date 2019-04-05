@@ -196,6 +196,8 @@ app.post('/webhook', async (req, res, next) => {
 		return next();
 	}
 
+	console.log(req.body);
+
 	const hmac = crypto.createHmac('sha1', process.env.SECRET);
 	const digest = 'sha1=' + hmac.update(payload).digest('hex');
 	const checksum = req.headers['x-hub-signature'];
