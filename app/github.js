@@ -16,12 +16,6 @@ const save = (host, data) => {
 
 module.exports = {
 
-	getRepoId(repo){
-		return new Promise(done => {
-			
-		});
-	},
-
 	authorize(repo, token){
 		return new Promise( (done, reject) => {
 			git.Repository
@@ -92,6 +86,7 @@ module.exports = {
 	},
 
 	hasCallback(host){
+		console.log('github logins', logins);
 		if(typeof logins[host] === 'undefined'){
 			return false;
 		}
