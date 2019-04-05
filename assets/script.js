@@ -27,7 +27,7 @@ class Commit {
 
 	update(data) {
 		this.id = data.id;
-		this.message.textContent = data.message;
+		this.message.innerHTML = data.message.replace(/(\[(\w{1})\:\w+\])/i, '<code class="action action-$2">$1</code>');
 		this.authorName.textContent = data.author.name;
 		this.authorEmail.textContent = data.author.email;
 		this.date.textContent = moment(data.date).format('DD-MM-YYYY HH:mm:ss');

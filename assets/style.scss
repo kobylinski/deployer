@@ -114,6 +114,15 @@ html, body{
 			padding-bottom: 0.5rem;
 			position: relative;
 			z-index: 1;
+
+			code.action{
+				display: inline-block;
+				font-weight: 700;
+				font-size: 0.6rem;
+				line-height: 1rem;
+				color: #fff;
+				
+			}
 		}
 
 		.author{
