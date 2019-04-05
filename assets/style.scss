@@ -96,6 +96,10 @@ html, body{
 			.message, .author, .date{
 				color:#fff;
 				font-weight: bold;
+
+				code{
+					border: 1px solid #fff;
+				}
 			}
 
 			.patch-to{
@@ -121,7 +125,10 @@ html, body{
 				font-size: 0.6rem;
 				line-height: 1rem;
 				color: #fff;
-				
+				background-color: #5392ca;
+				padding: 0 0.2rem;
+				border-radius: 0.1rem;
+				margin: 0 0.1rem;
 			}
 		}
 
