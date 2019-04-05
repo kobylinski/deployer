@@ -26,6 +26,7 @@ const repoCreate = require('./app/repo/create');
 const repoPatch = require('./app/repo/patch');
 const repoBranch = require('./app/repo/branch');
 const repoHistory = require('./app/repo/history');
+const repoCommit = require('./app/repo/commit');
 
 app.enable('trust proxy');
 
@@ -201,17 +202,23 @@ app.post('/webhook', async (req, res, next) => {
 	if (!checksum || !digest || checksum !== digest) {
 		return next();
 	}
-
-	console.log('------------');
-	console.log(payload);
-	console.log('------------');
-
+	
 	const repo = await repoCreate(req.deployer.repoPath);
-	const commit = await repoPull(repo);
+	const version = await repoPull(repo);
 
-	if(commit !== req.deployer.version){
-		const files = await repoPatch(repo, req.deployer.version, commit, req.deployer.projectPath);
-		appVersions.update(req, commit);
+	if(version !== req.deployer.version){
+		const commit = await repoCommit(version);
+		const command = /\[(\w{1})\:(\w+)\]/.exec(commit.message);
+		if(null !== command){
+			switch(command[1]){
+				case 'd':
+					if(command[2] === req.deployer.serverRole || command[2] === req.deployer.serverId){
+						const files = await repoPatch(repo, req.deployer.version, commit, req.deployer.projectPath);
+						appVersions.update(req, commit);
+					}
+					break;
+			}
+		}
 	}
 
 	next();
