@@ -196,8 +196,6 @@ app.post('/webhook', async (req, res, next) => {
 		return next();
 	}
 
-	console.log(req.body);
-
 	const hmac = crypto.createHmac('sha1', process.env.SECRET);
 	const digest = 'sha1=' + hmac.update(payload).digest('hex');
 	const checksum = req.headers['x-hub-signature'];
@@ -208,6 +206,8 @@ app.post('/webhook', async (req, res, next) => {
 
 	const repo = await repoCreate(req.deployer.repoPath);
 	const version = await repoPull(repo);
+
+	console.log(version);
 
 	if(version !== req.deployer.version){
 		const commit = await repoCommit(repo, version);
