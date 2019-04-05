@@ -202,7 +202,9 @@ app.post('/webhook', async (req, res, next) => {
 		return next();
 	}
 
+	console.log('------------');
 	console.log(payload);
+	console.log('------------');
 
 	const repo = await repoCreate(req.deployer.repoPath);
 	const commit = await repoPull(repo);
