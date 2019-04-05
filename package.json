@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "watch": "DEBUG=express:* nodemon --watch index.js --watch app index.js",
-    "app": "pm2 start index.js --name=deployer --watch"
+    "app": "pm2 start index.js --name deployer --watch"
   },
   "author": "",
   "license": "ISC",
