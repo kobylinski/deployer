@@ -51,7 +51,7 @@ app.use((req, res, next) => {
 		!req.session.githubToken && 
 		!req.url.startsWith('/assets') && 
 		!req.url.startsWith('/auth') && 
-		!req.url.startsWith('/hook')
+		!req.url.startsWith('/webhook')
 	){
 		res.redirect(req.deployer.basePath+'/auth');
 	}
@@ -185,6 +185,12 @@ app.get('/auth',  (req, res) => {
 		basePath: req.deployer.basePath,
 		login: auth_url
 	});
+});
+
+app.post('/webhook', (req, res, next) => {
+	console.log(req.headers);
+	res.json(true);
+	next();
 });
 
 app.get('/', (req, res, next) => {
