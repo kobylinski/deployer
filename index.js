@@ -181,7 +181,7 @@ app.get('/auth/redirect/:host', (req, res) => {
 
 app.get('/auth',  (req, res) => {
 	if(req.headers['host'] !== process.env.MAIN_HOST){
-		appGithub.setCallback(req.deployer.url + '/auth/populate');
+		appGithub.setCallback(req.headers['host'], req.deployer.url + '/auth/populate');
 		return res.redirect('http://'+process.env.MAIN_HOST+'/auth/redirect/'+req.headers['host']);
 	}
 
