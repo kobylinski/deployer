@@ -10,6 +10,6 @@ module.exports = {
 		next();
 	},	
 	update: function(req, hash){
-		fs.writeFileSync(req.deployer.projectVersion, hash);
+		fs.writeFileSync(req.deployer.projectVersion, hash.toString().trim());
 	}
 };
