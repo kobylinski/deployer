@@ -56,6 +56,7 @@ app.use((req, res, next) => {
 		!req.url.startsWith('/webhook')
 	){
 		res.redirect(req.deployer.basePath+'/auth');
+		return;
 	}
 	next();
 });
@@ -202,7 +203,7 @@ app.post('/webhook', async (req, res, next) => {
 	if (!checksum || !digest || checksum !== digest) {
 		return next();
 	}
-	
+
 	const repo = await repoCreate(req.deployer.repoPath);
 	const version = await repoPull(repo);
 
