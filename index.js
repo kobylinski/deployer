@@ -53,7 +53,8 @@ app.use((req, res, next) => {
 		!req.session.githubToken && 
 		!req.url.startsWith('/assets') && 
 		!req.url.startsWith('/auth') && 
-		!req.url.startsWith('/webhook')
+		!req.url.startsWith('/webhook') && 
+		!req.url.startsWith('/favicon')
 	){
 		res.redirect(req.deployer.basePath+'/auth');
 		return;
