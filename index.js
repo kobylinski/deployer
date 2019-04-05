@@ -214,7 +214,7 @@ app.post('/webhook', async (req, res, next) => {
 			switch(command[1]){
 				case 'd':
 					if(command[2] === req.deployer.serverRole || command[2] === req.deployer.serverId){
-						const files = await repoPatch(repo, req.deployer.version, commit, req.deployer.projectPath);
+						const files = await repoPatch(repo, req.deployer.version, version, req.deployer.projectPath);
 						appVersions.update(req, commit);
 					}
 					break;
