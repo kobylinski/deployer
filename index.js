@@ -216,13 +216,15 @@ app.post('/webhook', async (req, res, next) => {
 					if(command[2] === req.deployer.serverRole || command[2] === req.deployer.serverId){
 						const files = await repoPatch(repo, req.deployer.version, version, req.deployer.projectPath);
 						appVersions.update(req, version);
+						return res.json(true);
 					}
 					break;
 			}
 		}
 	}
 
-	next();
+
+	return res.json(false);
 });
 
 app.get('/', (req, res, next) => {
