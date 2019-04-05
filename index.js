@@ -210,7 +210,7 @@ app.post('/webhook', async (req, res, next) => {
 	const version = await repoPull(repo);
 
 	if(version !== req.deployer.version){
-		const commit = await repoCommit(version);
+		const commit = await repoCommit(repo, version);
 		const command = /\[(\w{1})\:(\w+)\]/.exec(commit.message);
 		if(null !== command){
 			switch(command[1]){
