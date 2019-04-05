@@ -11,6 +11,7 @@ const github = require('octonode');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const favicon = require('serve-favicon');
+const crypto = require('crypto');
 
 const sass = require('node-sass-middleware');
 const browserify = require('browserify-middleware');
@@ -187,9 +188,30 @@ app.get('/auth',  (req, res) => {
 	});
 });
 
-app.post('/webhook', (req, res, next) => {
-	console.log(req.headers);
-	res.json(true);
+app.post('/webhook', async (req, res, next) => {
+	const payload = JSON.stringify(req.body)
+	if (!payload) {
+		return next();
+	}
+
+	const hmac = crypto.createHmac('sha1', process.env.SECRET)
+	const digest = 'sha1=' + hmac.update(payload).digest('hex')
+	const checksum = req.headers[headerKey]
+	
+	if (!checksum || !digest || checksum !== digest) {
+		return next();
+	}
+
+	console.log(payload);
+
+	const repo = await repoCreate(req.deployer.repoPath);
+	const commit = await repoPull(repo);
+
+	if(commit !== req.deployer.version){
+		const files = await repoPatch(repo, req.deployer.version, commit, req.deployer.projectPath);
+		appVersions.update(req, commit);
+	}
+
 	next();
 });
 
